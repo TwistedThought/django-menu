@@ -1,0 +1,22 @@
+a.current {
+  color: red;
+}
+
+a {
+  color: green;
+}
+
+li a {
+  text-decoration: none;
+}
+
+li div {
+  border: 1px solid green;
+  margin-bottom: 1px;
+  padding: 5px;
+}
+
+ul {
+  display: table;
+  list-style-type: none;
+}
