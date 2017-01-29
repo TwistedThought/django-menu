@@ -1,14 +1,19 @@
 from django.db import models
 from django.urls import reverse
 
+
 class MenuItem(models.Model):
-    parent = models.ForeignKey('self', verbose_name='parent', null=True, blank=True)
+    parent = models.ForeignKey('self', verbose_name='parent',
+                               null=True, blank=True)
     caption = models.CharField('caption', max_length=50)
     url = models.CharField('URL', max_length=200, blank=True)
     named_url = models.CharField('named URL', max_length=200, blank=True)
+    arg = models.IntegerField('argument', null=True, blank=True)
     level = models.IntegerField('level', default=0, editable=False)
     rank = models.IntegerField('rank', default=0, editable=False)
-    menu = models.ForeignKey('Menu', related_name='contained_items', verbose_name='menu', null=True, blank=True, editable=False)
+    menu = models.ForeignKey('Menu', related_name='contained_items',
+                             verbose_name='menu', null=True,
+                             blank=True, editable=False)
 
     def __str__(self):
         return self.caption
@@ -82,15 +87,30 @@ class MenuItem(models.Model):
 
     def reverse_named_url(self):
         if self.named_url:
-            url = reverse(self.named_url)
+            if self.arg:
+                url = reverse(self.named_url, args=(self.arg,))
+            else:
+                url = reverse(self.named_url)
         else:
             url = None
         return url
 
+    def descendants_urls(self):
+        urls = []
+        for child in self.children():
+            urls.append(child.url)
+            urls.append(child.reverse_named_url())
+            if child.has_children():
+                for u in child.descendants_urls():
+                    urls.append(u)
+        return urls
+
 
 class Menu(models.Model):
     name = models.CharField('name', max_length=50)
-    root_item = models.ForeignKey(MenuItem, related_name='is_root_item_of', verbose_name='root item', null=True, blank=True, editable=False)
+    root_item = models.ForeignKey(MenuItem, related_name='is_root_item_of',
+                                  verbose_name='root item', null=True,
+                                  blank=True, editable=False)
 
     def save(self, *args, **kwargs):
         if not self.root_item:
@@ -110,6 +130,7 @@ class Menu(models.Model):
 
     def __str__(self):
         return self.name
+
 
 def clean_ranks(menu_items):
 

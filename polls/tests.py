@@ -4,6 +4,7 @@ from django.test import TestCase
 from .models import Question
 from django.urls import reverse
 
+
 class QuestionMethodTests(TestCase):
 
     def test_was_published_recently_with_future_question(self):
@@ -33,6 +34,7 @@ class QuestionMethodTests(TestCase):
         recent_question = Question(pub_date=time)
         self.assertIs(recent_question.was_published_recently(), True)
 
+
 def create_question(question_text, days):
     """
     Creates a question with the given `question_text` and published the
@@ -41,6 +43,7 @@ def create_question(question_text, days):
     """
     time = timezone.now() + datetime.timedelta(days=days)
     return Question.objects.create(question_text=question_text, pub_date=time)
+
 
 class QuestionViewTests(TestCase):
     def test_index_view_with_no_questions(self):
@@ -99,13 +102,15 @@ class QuestionViewTests(TestCase):
             ['<Question: Past question 2.>', '<Question: Past question 1.>']
         )
 
+
 class QuestionIndexDetailTests(TestCase):
     def test_detail_view_with_a_future_question(self):
         """
         The detail view of a question with a pub_date in the future should
         return a 404 not found.
         """
-        future_question = create_question(question_text='Future question.', days=5)
+        future_question = create_question(question_text='Future question.',
+                                          days=5)
         url = reverse('polls:detail', args=(future_question.id,))
         response = self.client.get(url)
         self.assertEqual(response.status_code, 404)

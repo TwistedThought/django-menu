@@ -5,6 +5,7 @@ from menu.models import Menu, MenuItem
 
 register = template.Library()
 
+
 def draw_menu(context, menu_name):
     try:
         menu = Menu.objects.get(name=menu_name)

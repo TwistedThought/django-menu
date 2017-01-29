@@ -4,19 +4,35 @@
 <ul>
   <li>
   {% if request.path == menu.root_item.url or request.path == menu.root_item.reverse_named_url %}
-    <div><a href="{% if menu.root_item.url %}{{ menu.root_item.url }}{% else %}{% url menu.root_item.named_url %}{% endif %}" class="current">{{ menu.root_item.caption }}</a></div>
-      <ul>
+    <div>
+      <a href="{% if menu.root_item.url %}{{ menu.root_item.url }}{% else %}{% url menu.root_item.named_url %}{% endif %}" class="current">{{ menu.root_item.caption }}</a>
+    </div>
+    <ul>
         {% for child_item in menu.root_item.children %}
-          <li><div><a href="{% if child_item.url %}{{ child_item.url }}{% else %}{% url child_item.named_url %}{% endif %}">{{ child_item.caption }}</a></div></li>
+          <li>
+            <div>
+              <a href="{% if child_item.url %}
+                          {{ child_item.url }}
+                      {% else %}
+                          {% if child_item.arg %}
+                              {% url child_item.named_url child_item.arg %}
+                          {% else %}
+                              {% url child_item.named_url %}
+                          {% endif %}
+                      {% endif %}">{{ child_item.caption }}</a>
+            </div>
+          </li>
         {% endfor %}
-      </ul>
+    </ul>
   {% else %}
-    <div><a href="{% if menu.root_item.url %}{{ menu.root_item.url }}{% else %}{% url menu.root_item.named_url %}{% endif %}">{{ menu.root_item.caption }}</a></div>
-      <ul>
+    <div>
+      <a href="{% if menu.root_item.url %}{{ menu.root_item.url }}{% else %}{% url menu.root_item.named_url %}{% endif %}">{{ menu.root_item.caption }}</a>
+    </div>
+    <ul>
       {% for menu_item in menu.root_item.children %}
           {% show_menu_item menu_item %}
       {% endfor %}
-      </ul>
+    </ul>
   {% endif %}
   </li>
 </ul>

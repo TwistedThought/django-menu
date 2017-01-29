@@ -1,0 +1,7 @@
+{% load menu_tags %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'menu/style.css' %}" />
+
+<h2>{{request.path}}</h2>
+
+{% draw_menu "another_menu" %}
